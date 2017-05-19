@@ -546,9 +546,6 @@
                 </template>
               </div>
             </template>
-            <div style="display: none" class="month-row month-name nextMonthLabel" id="showMonthName">
-              <span>{{dateFormatMonthName(month.date, 'MMMM YYYY', locale)}}</span>
-            </div>
           </div>
         </template>
       </div>
@@ -606,23 +603,6 @@
             value: function () {
               return new Date();
             },
-            // observer: '_dateChanged'
-          },
-          showMonthName: {
-            type: Boolean,
-            value: true
-          },
-
-          scrollToMonth: {
-            type: Number,
-            value: 0
-          },
-          /**
-           *This property set to checkout date after 6 days. 
-           */
-          setCheckOut: {
-            type: Number,
-            value: 6
           },
           /**
            * The current locale
@@ -648,13 +628,13 @@
             value: null
           },
           /**
-           * The currently selected month (1-12)
+           *currently selected month (1-12)
            */
           currentMonth: {
             type: Number
           },
           /**
-           * The currently selected year
+           *currently selected year
            */
           currentYear: {
             type: Number
@@ -663,9 +643,9 @@
           _months: Array,
           _firstDayOfWeek: Number,
           /**
-           * This property is check to first day of week.
-          */
-          checkFirstDayofWeek: String,
+           *To check if given date is first day of week.
+          **/
+          isFirstDayofWeek: String,
         },
         behaviors: [
           Polymer.IronResizableBehavior
@@ -683,6 +663,9 @@
           this.currentYear = this.date.getFullYear();
           this._transitionEvent = this._whichTransitionEnd();
         },
+        /**
+        *To set the month name.
+        **/
         dateFormat: function (date, format, locale) {
           if (!date) {
             return '';
@@ -691,16 +674,9 @@
           value.locale(locale || this.locale);
           return value.format(format);
         },
-        dateFormatMonthName: function (date, format, locale) {
-          if (!date) {
-            return '';
-          }
-          var date = date;
-          date.setDate(date.getDate() + 31);
-          var value = moment(date);
-          value.locale(locale || this.locale);
-          return value.format(format);
-        },
+        /**
+         * To set the locale.
+         **/
         _localeChanged: function (locale) {
           var localeMoment = moment();
           localeMoment.locale(locale);
@@ -708,15 +684,17 @@
           for (var i = 0; i < 7; i++) {
             weekdays.push(localeMoment.weekday(i).format('dd'));
             if (i === 0) {
-              this.checkFirstDayOfWeek = localeMoment.weekday(i).format('dddd');
+              this.isFirstDayOfWeek = localeMoment.weekday(i).format('dddd');
             }
           }
           this._weekdays = weekdays;
           this._firstDayOfWeek = localeMoment.weekday(0).format('d');
           var d = localeMoment.weekday(0).format('d');
           return d;
-          // this.checkFirstDayOfWeek = localeMoment.weekday(0).format('dddd');
         },
+        /**
+        * Number of months to preload on both sides of the current month.
+        **/
         _changeMinDate: function () {
           if (this.minDate === null) {
             this.minDate = new Date();
@@ -731,7 +709,9 @@
           }
           return setMinDate;
         },
-
+        /**
+         * To render the calendar according to month display.
+         **/
         _populate: function (currentYear, currentMonth) {
 
           var date, month, weeks, day, d, dayInfo, monthData, months = [];
@@ -810,7 +790,9 @@
           });
         },
 
-
+        /**
+         * To set CSS for selected dates and selected range.
+         **/
         _getDayClass: function (cssClass, date) {
           var startDateDefined = true;
           if (date) {
@@ -948,7 +930,9 @@
           }
           return cssClass;
         },
-
+        /**
+         * To remove duplicate css class from element.
+         **/
         _removeDuplicateWord: function (string) {
           var uniqueList = string.split(' ').filter(function (item, i, allItems) {
             return i == allItems.indexOf(item);
@@ -957,22 +941,34 @@
 
           return uniqueList;
         },
+        /**
+         * To check day name.
+         **/
         _checkDayName: function (date) {
           var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
           var d = new Date(date);
           var dayName = days[d.getDay()];
           return dayName;
         },
+        /**
+         * To check last day of month.
+         **/
         _checkLastDayofMonth: function (date) {
           var d = new Date(date.getFullYear(), date.getMonth() + 1, 0);
           return d;
         },
+        /**
+         * To check first day of month.
+         **/
         _checkFirstDayofMonth: function (date) {
           var d = new Date(date);
           d.setMonth(d.getMonth(), 1);
           d.setHours(0, 0, 0, 0);
           return d;
         },
+        /**
+         * To check first day of week.
+         **/
         _checkFirstDayofWeek: function (date) {
           var dayName = this.querySelector("#weekday").textContent;
           if (dayName === "M") {
@@ -982,6 +978,9 @@
             return "Sunday";
           }
         },
+        /**
+         * To check last day of week.
+         **/
         _checkLastDayofWeek: function (date) {
           var dayName = this.querySelector("#weekday").textContent;
           if (dayName === "M") {
@@ -991,13 +990,19 @@
             return "Saturday";
           }
         },
+        /**
+         * To check disabled dates.
+         **/
         _isDisabled: function (day, date) {
           return !day || !this._withinValidRange(date);
         },
+        
         _getMonthClass: function (name, month) {
           return name + ' month-' + month.year + '-' + month.month;
         },
-
+        /**
+         * To swipe on previous month after clicking on back arrow.
+         **/
         _swipePrevMonth: function () {
           var startDate = this.domHost.domHost.domHost.querySelector("#start");
           var endDate = this.domHost.domHost.domHost.querySelector("#end");
@@ -1012,35 +1017,20 @@
             this.fire('swiped', { direction: 'right' });
           }
         },
+        /**
+         * To swipe on next month after clicking on next arrow.
+         **/
         _swipeNextMonth: function () {
           if (!this.maxDate || this.currentYear < this.maxDate.getFullYear() || this.currentMonth < this.maxDate.getMonth() + 1) {
             this.fire('swiped', { direction: 'left' });
           }
+          else{
+            return;
+          }
         },
-        // _getMonthIdx: function (pos) {
-        //   // returns the index for the visible month according to the given position
-        //   var width = this._containerWidth;
-        //   var i = Math.floor((-pos + (width / 2)) / width);
-        //   return i < 0 ? 0 : i;
-        // },
-
-        // _getFastestMovement: function (event) {
-        //   // detect flick based on fastest segment of movement
-        //   var l = this._moveQueue.length;
-        //   var dt, tx, ty, tv2, x = 0, y = 0, v2 = 0;
-        //   for (var i = 0, m; i < l && (m = this._moveQueue[i]); i++) {
-        //     dt = event.timeStamp - m.timeStamp;
-        //     tx = (event.detail.x - m.detail.x) / dt;
-        //     ty = (event.detail.y - m.detail.y) / dt;
-        //     tv2 = tx * tx + ty * ty;
-        //     if (tv2 > v2) {
-        //       x = tx;
-        //       y = ty;
-        //       v2 = tv2;
-        //     }
-        //   }
-        //   return { x: x, y: y, v: Math.sqrt(v2) };
-        // },
+        /**
+         * This function works as listener swipe.
+         **/
         _onSwipe: function (event) {
           if (event.detail.direction === 'right') {
             this._prevMonth();
@@ -1051,14 +1041,9 @@
             return true;
           }
         },
-        // _once: function (eventName, callback, node) {
-        //   node = node || this;
-        //   function onceCallback() {
-        //     node.removeEventListener(eventName, onceCallback);
-        //     callback.apply(null, arguments);
-        //   }
-        //   node.addEventListener(eventName, onceCallback);
-        // },
+        /**
+         * To increase or decrease next month and previous month.
+         **/
         _incrMonth: function (i) {
           var date = new Date(this.currentYear, this.currentMonth - 1 + i);
           var year = date.getFullYear();
@@ -1068,13 +1053,21 @@
             this.currentMonth = month;
           }
         },
+         /**
+         * To decrease previous month.
+         **/
         _prevMonth: function () {
           this._incrMonth(-1);
         },
+         /**
+         * To increase next month.
+         **/
         _nextMonth: function () {
           this._incrMonth(1);
         },
-
+         /**
+         * To select dates after clicking or tapping on date.
+         **/
         _tapDay: function (event) {
           var startDate = this.domHost.domHost.domHost.querySelector("#start");
           var endDate = this.domHost.domHost.domHost.querySelector("#end");
@@ -1154,31 +1147,39 @@
           }
         },
 
-
+         /**
+         * To check date is valid or not.
+         **/
         _isValidDate: function (date) {
           return date && date.getTime && !isNaN(date.getTime());
         },
+         /**
+         *To check date is within valid range or not. 
+         **/
         _withinValidRange: function (date) {
           if (this._isValidDate(date)) {
             return (!this.minDate || date >= this.minDate) && (!this.maxDate || date <= this.maxDate);
           }
           return false;
         },
+        /**
+         * To check month is within valid range or not.
+         **/
         _monthWithinValidRange: function (year, month) {
           var monthStart = new Date(year, month - 1, 1);
           var monthEnd = new Date(year, month, 0);
           return this._withinValidRange(monthStart) || this._withinValidRange(monthEnd);
         },
+        
         _positionSlider: function () {
           if (!this._months || !this._containerWidth) {
             return;
           }
-
-          // var i = ((this.currentYear * 12) + this.currentMonth) -
-          //   ((this._months[0].year * 12) + this._months[0].month);
-          // this._translateX(0 * this._containerWidth);
-
         },
+        /**
+         * To update the selected dates and css class.
+         **/
+        
         _updateSelection: function () {
           // Force the day selection circle to maintain a 1:1 ratio
           this.async(function () {
@@ -1201,13 +1202,16 @@
             });
           });
         },
+        
         _resizeHandler: function () {
           this.async(function () {
             this._containerWidth = this.$.calendar.offsetWidth;
-            // this._positionSlider();
             this._updateSelection();
           });
         },
+        /**
+         * To get the name of name.
+         **/
         _getDayName: function (date) {
           return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
         },

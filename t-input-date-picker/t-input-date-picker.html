@@ -28,7 +28,7 @@ Example:
        :host {
         display: block;
       }
-
+      
       paper-input {
         --paper-input-container-focus-color: #4cb050;
         --paper-input-container-underline-focus-color: #4cb050;
@@ -38,7 +38,7 @@ Example:
         --paper-input-container-underline: #4cb050;
         font-size: small;
       }
-
+      
        :host>paper-button {
         padding: 0px;
         margin: 0px;
@@ -47,25 +47,25 @@ Example:
         text-transform: none;
         text-align: left;
       }
-
+      
        :host paper-dialog paper-date-picker {
         margin: 0px;
         padding: 0px;
       }
-
+      
        :host>paper-button::shadow>.content.paper-button {
         padding: 0px;
       }
-
+      
       paper-button.btn-clear {
         color: var(--paper-red-500);
         --paper-button-flat-focus-color: var(--paper-red-50);
       }
-
+      
       paper-button.btn-clear:hover {
         background: var(--paper-red-50);
       }
-
+      
       @media (min-width: 300px) and (max-width: 767px) {
         paper-dialog {
           position: fixed;
@@ -84,7 +84,7 @@ Example:
           height: 380px;
         }
       }
-
+      
       @media screen and (-ms-high-contrast: active),
       (-ms-high-contrast: none) {
         #dialog {
@@ -92,7 +92,7 @@ Example:
           margin-right: 7px;
         }
       }
-
+      
       @media (min-width: 768px) and (max-width: 1023px) {
         paper-dialog {
           position: fixed;
@@ -110,7 +110,7 @@ Example:
           height: 100%;
         }
       }
-
+      
       @media (min-width: 1024px) and (max-width:1200px) {
         paper-dialog {
           position: fixed;
@@ -130,7 +130,7 @@ Example:
           min-height: 98%;
         }
       }
-
+      
       @media (min-width: 1200px) {
         paper-dialog {
           position: fixed;
@@ -150,7 +150,7 @@ Example:
           min-height: 98%;
         }
       }
-
+      
       paper-button>* {
         pointer-events: none;
       }
@@ -189,41 +189,69 @@ Example:
     properties: {
       /**
         * Turns the datepicker in a modal dialog .
+          *@private
         */
       modal: {
         type: Boolean
       },
+      /**
+      *Following properties are added to suppress lint warnings.
+      **/
+      /**
+      *@private
+      **/
       _dropdownContent: {
         type: String
       },
+      /**@private**/
       invalid: {
         type: Boolean
       },
+      /**@private**/
       allowedPattern: {
         type: String,
         notify: true
       },
+      /**@private**/
       validator: {},
+      /**@private**/
       type: {},
+      /**@private**/
       pattern: {},
+      /**@private**/
       autocomplete: {},
+      /**@private**/
       autofocus: {},
+      /**@private**/
       inputmode: {},
+      /**@private**/
       minlength: {},
+      /**@private**/
       maxlength: {},
+      /**@private**/
       min: {},
+      /**@private**/
       max: {},
+      /**@private**/
       step: {},
+      /**@private**/
       name: {},
+      /**@private**/
       autoValidate: {},
+      /**@private**/
       lit: {},
+      /**@private**/
       size: {},
+      /**@private**/
       autocapitalize: {},
+      /**@private**/
       autocorrect: {},
+      /**@private**/
       autosave: {},
+      /**@private**/
       results: {},
+      /**@private**/
       errorMessage: {},
-
       /**
         * The label for the dropdown.
         */
@@ -232,30 +260,21 @@ Example:
       },
 
       /**
-        * The placeholder for the dropdown.
+        * placeholder for datepicker as MM/DD/YY.
         */
       placeholder: {
         type: String
       },
 
-      noPrefixIcon: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      },
-
+      /**@private**/
       disabled: {
         type: Boolean,
         value: false
       },
-
-
-      prefixIcon: {
-        type: String,
-        value: 'today',
-        reflectToAttribute: true
-      },
-
+      /**
+      *To store previous check in date.
+         *@private
+         **/
       LastStartDate: {
         type: Date,
         value: new Date()
@@ -264,7 +283,8 @@ Example:
       /**
         * Set to true to disable the floating label. Bind this to the
         * `<paper-input-container>`'s `noLabelFloat` property.
-        */
+        *@private
+        **/
       noLabelFloat: {
         type: Boolean,
         value: false,
@@ -273,7 +293,7 @@ Example:
       /**
         * Set to true to always float the label. Bind this to the
         * `<paper-input-container>`'s `alwaysFloatLabel` property.
-        */
+        *@private**/
       alwaysFloatLabel: {
         type: Boolean,
         value: false
@@ -286,29 +306,38 @@ Example:
         type: String,
         notify: true
       },
-
+      /**
+      * The minimum allowed date
+      */
       minDate: {
         type: Date,
         notify: true
       },
-
+      /**
+      * The maximum allowed date
+      */
       maxDate: {
         type: Date,
         notify: true
       },
-
+      /**@private**/
       keyEventTarget: {
         type: Object,
         value: function () {
           return this;
         }
       },
-
+      /**
+      *To hold the value of datepicker.
+      **/
       value: {
         type: Date,
         notify: true
       },
-
+      /**
+      *To set the display format of input.
+      *@private
+      **/
       inputDisplayFormat: {
         type: String,
         value: 'L',
